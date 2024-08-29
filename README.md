@@ -1,2 +1,2 @@
 # starland
-built from scratch wayland compositor
+my attempt(s) at learning how to build a wayland compositor
