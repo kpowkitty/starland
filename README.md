@@ -1,7 +1,7 @@
 # Starland: a Wayland Adventure
 My attempt(s) at learning how to build a personalized Wayland compositor. I am interested in creating a windows manager similar to Hyprland, as such, this is documentation of my advance in that direction.
 
-## Attempt 1: Following [Drew DeVault's blog]([url](https://drewdevault.com/2018/02/17/Writing-a-Wayland-compositor-1.html)) 
+## Attempt 1: Following [Drew DeVault's Blog](https://drewdevault.com/2018/02/17/Writing-a-Wayland-compositor-1.html)
 
 - All code is from his blog
 - Comments are either my own or copied from his blog
