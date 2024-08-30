@@ -1,3 +1,10 @@
+/**
+  * Author: kpowkitty
+  * Credit: Drew DeVault https://drewdevault.com/2018/02/17/Writing-a-Wayland-compositor-1.html
+  * Date: August 2024
+  * Status: Unfinished (see readme)
+  */
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
