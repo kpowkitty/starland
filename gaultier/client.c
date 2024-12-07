@@ -178,3 +178,72 @@ static uint32_t wayland_wl_display_get_registry(int fd)
 
 	return wayland_current_id;
 }
+
+typedef enum state_state_t state_state_t;
+
+enum state_state_t {
+	STATE_NONE,
+	STATE_SURFACE_ACKED_CONFIGURE,
+	STATE_SURFACE_ATTACHED,
+};
+
+typedef struct state_t state_t;
+struct state_t {
+	uint32_t wl_registry;
+	uint32_t wl_shm;
+	uint32_t wl_shm_pool;
+	uint32_t wl_buffer;
+	uint32_t xdg_wm_base;
+	uint32_t xdg_surface;
+	uint32_t wl_compositor;
+	uint32_t wl_surface;
+	uint32_t xdg_toplevel;
+	uint32_t stride;
+	uint32_t w;
+	uint32_t h;
+	uint32_t shm_pool_size;
+	uint32_t shm_fd;
+	uint32_t *shm_pool_data;
+
+	state_state_t state;
+};
+
+static void create_shared_memory_file(unint64_t size, state_t *state) {
+	char name[255] = "/";
+	for (uint64_t i = 1; i < cstring_len(name); ++i) {
+		name[i] = ((double)rand()) / (double)RAND_MAX * 26 + 'a';
+	}
+
+	// shm_open(3) -> create a POSIX shared mem obj
+	// RDWR -> read-write
+	// CREAT -> if the file DNE, create it
+	// EXCL -> returns an error if the shared mem obj with this name alr exists
+	// XXX we could use memfd_create(2) as it is linux specific
+	int fd = shm_open(name, O_RDWR | O_EXCL | O_CREAT, 0600);
+	if (fd == -1) {
+		exit(errno);
+	}
+
+	assert(shm_unlink(name) != -1);
+
+	if (ftruncate(fd, size) == 1) {
+		exit(errno);
+	}
+
+	state->shm_pool_data = 
+		mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	assert(state->shm_pool_data != NULL);
+	state->shm_fd = fd;
+}
+
+int main() {
+	state_t state = {
+		.wl_registry = wayland_wl_display_get_registry(fd),
+		.w = 117,
+		.h = 150,
+		.stride = 117 * color_channels,
+	};
+
+	// Single buffering
+	state.shm_pool_size = state.h * state.stride;
+}
